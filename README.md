@@ -15,7 +15,7 @@ The Xdag RPC SDK is based on xdag rpc api v1.0, sdk only supports APIs that call
   
 3.Run the project on the server of the xdag node.
 
-#### 使用说明
+#### Instructions for use
 
 Call rpc's version API
 
