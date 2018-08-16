@@ -12,9 +12,9 @@ import io.xdag.rpc.http.Response;
 import io.xdag.rpc.model.Account;
 import io.xdag.rpc.model.Balance;
 import io.xdag.rpc.model.BlockInfo;
-import io.xdag.rpc.model.ResultModel;
+import io.xdag.rpc.model.Result;
 import io.xdag.rpc.model.ResultObject;
-import io.xdag.rpc.model.ResultPageModel;
+import io.xdag.rpc.model.PageResult;
 import io.xdag.rpc.model.RpcError;
 import io.xdag.rpc.model.Stats;
 import io.xdag.rpc.model.Transaction;
@@ -32,7 +32,7 @@ public class JsonRPCApi {
 	
 	private  static final Client client = new Client();
 	
-	private  static final String RPC_VERSION = "1.1";
+	private  static final String RPC_VERSION = Configuration.defaulRpcVersion;
 	private  static final String XDAG_VERSION = "xdag_version";
 	private  static final String XDAG_GET_ACCOUNT = "xdag_get_account";
 	private  static final String XDAG_GET_BALANCE = "xdag_get_balance";
@@ -56,7 +56,7 @@ public class JsonRPCApi {
 	 * 返回xdag节点版本
 	 * @return
 	 */
-	public ResultModel<Version> version() {
+	public Result<Version> version() {
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		map.put("params", params);
@@ -68,7 +68,7 @@ public class JsonRPCApi {
 	 * @param count 需要返回xdag的账号数量
 	 * @return
 	 */
-	public ResultModel<Account> getAccount(int count) {
+	public Result<Account> getAccount(int count) {
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		params.add(String.valueOf(count));
@@ -82,7 +82,7 @@ public class JsonRPCApi {
 	 * @param address 需要查询的账号地址
 	 * @return
 	 */
-	public ResultModel<Balance> getBalance(String address) {		
+	public Result<Balance> getBalance(String address) {		
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		params.add(address);
@@ -95,7 +95,7 @@ public class JsonRPCApi {
 	 * 获取节点当前状态
 	 * @return 
 	 */
-	public ResultModel<String> getState() {		
+	public Result<String> getState() {		
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		map.put("params", params);
@@ -108,7 +108,7 @@ public class JsonRPCApi {
 	 * 获取已连接节点的当前统计信息
 	 * @return
 	 */
-	public ResultModel<Stats> getStats() {	
+	public Result<Stats> getStats() {	
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		map.put("params", params);
@@ -118,11 +118,11 @@ public class JsonRPCApi {
 	}
 	
 	/**
-	 * 返回块信息
+	 * 返回块信息(仅供矿池使用)
 	 * @param hashrate 地址或 hashrate
 	 * @return
 	 */
-	public ResultModel<BlockInfo> getBlockInfo(String hashrate) {
+	public Result<BlockInfo> getBlockInfo(String hashrate) {
 		StringMap map = new StringMap();
 		List<String> params = new ArrayList<String>();
 		params.add(hashrate);
@@ -132,13 +132,13 @@ public class JsonRPCApi {
 	}
 
 	/**
-	 * 获取指定地址的交易信息
+	 * 获取指定地址的交易信息(仅供矿池使用)
 	 * @param address 交易地址
 	 * @param page 页码
 	 * @param pageSize 每页大小
 	 * @return
 	 */
-	public ResultPageModel<Transaction> getTransactions(String address,int page,int pageSize) {	
+	public PageResult<Transaction> getTransactions(String address,int page,int pageSize) {	
 		StringMap map = new StringMap();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -148,7 +148,7 @@ public class JsonRPCApi {
 		list.add(params);
 		map.put("params", list);
 		map.put("method", XDAG_GET_TRANSACTIONS);
-		return doRequestPage(map,Transaction.class,"transactions");
+		return doPageRequest(map,Transaction.class,"transactions");
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public class JsonRPCApi {
 	 * @param address 地址
 	 * @return
 	 */
-	public ResultModel<Xfer> doXfer(String amount,String address) {
+	public Result<Xfer> doXfer(String amount,String address) {
 		StringMap map = new StringMap();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -174,7 +174,7 @@ public class JsonRPCApi {
 	 * @param count 地址数量
 	 * @return 生成的账户地址数组
 	 */
-	public ResultModel<String> createNewAddress(int count) {
+	public Result<String> createNewAddress(int count) {
 		StringMap map = new StringMap();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -193,13 +193,13 @@ public class JsonRPCApi {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	private <T> ResultModel<T> doRequest(StringMap map,Class<T> cls){
+	private <T> Result<T> doRequest(StringMap map,Class<T> cls){
 		String url = configuration.apiHost();
 		try {		
 			map.put("id", RPC_VERSION);
 			Response response = client.post(url, Json.toJson(map.map()), null,CONTENT_TYPE);
 			HashMap<String,Object> retMap = Json.jsonToHashMap(response.bodyString());
-			ResultModel<T> obj = new ResultModel<T>();	
+			Result<T> obj = new Result<T>();	
 			obj.setId((String)retMap.get("id"));
 			
 			if(retMap.containsKey("result")) {
@@ -228,14 +228,14 @@ public class JsonRPCApi {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	private <T> ResultPageModel<T> doRequestPage(StringMap map,Class<T> cls,String key){
+	private <T> PageResult<T> doPageRequest(StringMap map,Class<T> cls,String key){
 		String url = configuration.apiHost();
 		try {		
 			map.put("id", RPC_VERSION);
 			System.out.println(Json.toJson(map.map()));
 			Response response = client.post(url, Json.toJson(map.map()), null,CONTENT_TYPE);
 			HashMap<String,Object> retMap = Json.jsonToHashMap(response.bodyString());
-			ResultPageModel<T> obj = new ResultPageModel<T>();	
+			PageResult<T> obj = new PageResult<T>();	
 			ResultObject<T> resultObject = new ResultObject<T>();
 			obj.setId((String)retMap.get("id"));
 			

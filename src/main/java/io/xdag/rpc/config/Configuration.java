@@ -12,7 +12,11 @@ public final class Configuration implements Cloneable {
 	/**
 	 * 默认节点地址和端口需要进行配置
 	 */
-    public static String defaultApiHost = "192.168.1.99:8888";
+    public static String defaultApiHost = "127.0.0.1";
+    
+    public static String defaultApiPort = "7667";
+    
+    public static String defaulRpcVersion = "2";
     /**
      * 操作是否使用 https , 默认否
      */
@@ -79,7 +83,7 @@ public final class Configuration implements Cloneable {
         if (useHttpsDomains) {
             scheme = "https://";
         }
-        return scheme + defaultApiHost;
+        return scheme + defaultApiHost+":"+defaultApiPort;
     }
 
 	public ProxyConfiguration getProxy() {

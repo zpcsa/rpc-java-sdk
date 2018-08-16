@@ -1,36 +1,34 @@
 package io.xdag.rpc;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
+import io.xdag.rpc.api.JsonRPCApi;
+import io.xdag.rpc.model.Account;
+import io.xdag.rpc.model.Balance;
+import io.xdag.rpc.model.Result;
+import io.xdag.rpc.model.Version;
+import io.xdag.rpc.util.Json;
 
-public class RPCTest 
-    extends TestCase
+public class RPCTest
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RPCTest( String testName )
-    {
-        super( testName );
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( RPCTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+	@Test
+	public void version() {
+		Result<Version> result = JsonRPCApi.getInstance().version();
+		System.out.println(Json.toJson(result));
+		System.out.println(Json.toJson(result.getResult()));
+	}
+	
+	@Test
+	public void getAccount() {
+		Result<Account> result = JsonRPCApi.getInstance().getAccount(5);
+		System.out.println(Json.toJson(result));
+	}
+	
+	@Test
+	public void getBalance() {
+		Result<Balance> result = JsonRPCApi.getInstance().getBalance("cosuYGn+Vjp1rxD0rnq7OI9xyBKETaCm");
+		System.out.println(Json.toJson(result));
+	}
+	
 }

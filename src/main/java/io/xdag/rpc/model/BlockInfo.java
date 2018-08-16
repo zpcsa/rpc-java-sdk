@@ -2,11 +2,7 @@ package io.xdag.rpc.model;
 
 import java.io.Serializable;
 
-/**
- * 区块信息
- * @author jerry
- *
- */
+
 public class BlockInfo  implements Serializable {
 
 	private static final long serialVersionUID = 1L;

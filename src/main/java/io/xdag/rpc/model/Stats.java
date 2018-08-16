@@ -2,11 +2,6 @@ package io.xdag.rpc.model;
 
 import java.io.Serializable;
 
-/**
- * 账户信息model
- * @author jerry
- *
- */
 public class Stats  implements Serializable {
 
 	private static final long serialVersionUID = 1L;

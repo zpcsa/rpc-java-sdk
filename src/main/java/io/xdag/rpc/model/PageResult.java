@@ -1,20 +1,17 @@
 package io.xdag.rpc.model;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class ResultModel<T> implements Serializable {
+public class PageResult<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private RpcError error;
 	
-	private List<T> result;
+	private ResultObject<T> result;
 	
 	private String id;
-	
 
-	
 	public RpcError getError() {
 		return error;
 	}
@@ -23,25 +20,27 @@ public class ResultModel<T> implements Serializable {
 		this.error = error;
 	}
 
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public List<T> getResult() {
+
+
+	public ResultObject<T> getResult() {
 		return result;
 	}
 
-	public void setResult(List<T> result) {
+	public void setResult(ResultObject<T> result) {
 		this.result = result;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override
 	public String toString() {
-		return "ResultModel [error=" + error + ", result=" + result + ", id=" + id + "]";
+		return "ResultPageModel [error=" + error + ", result=" + result + ", id=" + id + "]";
 	}
 
 	
