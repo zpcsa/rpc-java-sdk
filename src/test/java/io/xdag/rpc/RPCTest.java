@@ -5,6 +5,7 @@ import org.junit.Test;
 import io.xdag.rpc.api.JsonRPCApi;
 import io.xdag.rpc.model.Account;
 import io.xdag.rpc.model.Balance;
+import io.xdag.rpc.model.BlockInfo;
 import io.xdag.rpc.model.Result;
 import io.xdag.rpc.model.Version;
 import io.xdag.rpc.util.Json;
@@ -31,4 +32,9 @@ public class RPCTest
 		System.out.println(Json.toJson(result));
 	}
 	
+	@Test
+	public void getBlockInfo() {
+		Result<BlockInfo> result = JsonRPCApi.getInstance().getBlockInfo("cosuYGn+Vjp1rxD0rnq7OI9xyBKETaCm");
+		System.out.println(Json.toJson(result));
+	}
 }

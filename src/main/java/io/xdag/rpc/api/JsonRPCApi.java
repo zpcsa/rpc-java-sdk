@@ -41,7 +41,6 @@ public class JsonRPCApi {
 	private  static final String XDAG_GET_BLOCK_INFO = "xdag_get_block_info";
 	private  static final String XDAG_GET_TRANSACTIONS  = "xdag_get_transactions";
 	private  static final String XDAG_DO_XFER = "xdag_do_xfer";
-	private  static final String XDAG_NEW_ADDRESS = "xdag_new_address";
 	
 	private static final String CONTENT_TYPE = "application/json; charset=utf-8";
 	
@@ -167,22 +166,6 @@ public class JsonRPCApi {
 		map.put("params", list);
 		map.put("method", XDAG_DO_XFER);
 		return doRequest(map,Xfer.class);
-	}
-	
-	/**
-	 * 生成指定数量的新地址，默认为1
-	 * @param count 地址数量
-	 * @return 生成的账户地址数组
-	 */
-	public Result<String> createNewAddress(int count) {
-		StringMap map = new StringMap();
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("count", count);
-		list.add(params);
-		map.put("params", list);
-		map.put("method", XDAG_NEW_ADDRESS);
-		return doRequest(map,String.class);
 	}
 	
 	/**
