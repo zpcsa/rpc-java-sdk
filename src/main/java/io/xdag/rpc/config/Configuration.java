@@ -14,7 +14,7 @@ public final class Configuration implements Cloneable {
 	 */
     public static String defaultApiHost = "127.0.0.1";
     
-    public static String defaultApiPort = "7667";
+    public static String defaultApiPort = "7677";
     
     public static String defaulRpcVersion = "2";
     /**
